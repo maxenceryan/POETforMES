@@ -2,7 +2,7 @@
 
 Master's Thesis for the M.Sc. of Integrated Building Systems at ETH Zürich, 29.03.2021.
 
-Title: **Navigating Uncertainty with Co-Evolution of Agents and Environments for the Design of Robust Multi-Energy Systems**
+**Navigating Uncertainty with Co-Evolution of Agents and Environments for the Design of Robust Multi-Energy Systems**
 
 ## Abstract
 
@@ -14,13 +14,28 @@ The results confirm that the state of the approach does miss robust designs that
 
 Finally, an interactive visualization tool is developed that allows for environment and agent comparison. The tool consists of a heatmap grid to compare agents in other environment, with sampled points and an approximation via surrogate model of the entire performance space. A comparative pareto front graph allows to compare a single agent’s performance relative to the objectives in different environments. The tool was found to provide a good overview and quick response time for planners, which can encourage planners to explore uncertainty in their designs at an early stage.
 
+## Key Figures
+
+### Simulation Example
+
+![Results](resources/demo_results.png)
+
+### Visualiser
+
+![Visualiser](resources/demo_visconcept.png)
+
 ## Demo
 
+![Interactive Visualiser](resources/Interactive%20Visualiser%20Demo.gif)
 
 ## Links
 
 [POET Algorithm](https://eng.uber.com/poet-open-ended-deep-learning/)
 
 ## Code
+
+Backend: Python
+
+Frontend: Dash (Plotly)
 
 Upload TBD.
