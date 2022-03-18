@@ -14,6 +14,8 @@ The results confirm that the state of the approach does miss robust designs that
 
 Finally, an interactive visualization tool is developed that allows for environment and agent comparison. The tool consists of a heatmap grid to compare agents in other environment, with sampled points and an approximation via surrogate model of the entire performance space. A comparative pareto front graph allows to compare a single agent’s performance relative to the objectives in different environments. The tool was found to provide a good overview and quick response time for planners, which can encourage planners to explore uncertainty in their designs at an early stage.
 
+[Link to full paper](https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/486018/MA_report_Ryan.pdf?sequence=1)
+
 ## Key Figures
 
 ### Simulation Example
