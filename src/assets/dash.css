@@ -1,0 +1,40 @@
+
+@font-face{
+    font-family: TwCenMT;
+    src: local("Tw Cen MT");
+}
+
+div
+{
+    font-family: TwCenMT;
+}
+
+.rc-slider-mark-text {
+
+    transform: rotate(-45deg);
+
+    /* Legacy vendor prefixes that you probably don't need... */
+
+    /* Safari */
+    -webkit-transform: rotate(-45deg);
+
+    /* Firefox */
+    -moz-transform: rotate(-45deg);
+
+    /* IE */
+    -ms-transform: rotate(-45deg);
+
+    /* Opera */
+    -o-transform: rotate(-45deg);
+
+    /* Internet Explorer */
+    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
+}
+
+.rc-slider-handle{
+    background-color:black;
+}
+
+.rc-slider-track{
+    background-color:black;
+}

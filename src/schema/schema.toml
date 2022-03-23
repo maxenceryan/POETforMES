@@ -1,0 +1,475 @@
+### FROM JACK HAWTHORNE MASTER THESIS
+
+[scenarios]
+[scenarios.period_start]
+memo = "The start period of the optimization"
+dtype = "int"
+default = 1
+
+[scenarios.period_end]
+memo = "The end period of the optimization"
+dtype = "int"
+default = 8760
+
+[scenarios.objectives]
+memo = "The objectives of the optimisation"
+dtype = "list"
+item.dtype = "enum"
+item.enum = ['energy', 'cost', 'co2']
+default = ['energy', 'cost', 'co2']
+
+[scenarios.temporal_resolution]
+memo = "The temporal resolution of the optimization (only hourly supported currently)"
+dtype = "enum"
+enum = ['hourly'] 
+default = "hourly"
+
+[scenarios.currency]
+memo = "The currency of the cost calculations."
+dtype = "str"
+default = "CHF"
+
+[scenarios.number_generations]
+memo = "The number of generations for the ENEAT algorithm."
+dtype = "int"
+default = 1
+
+[scenarios.population_size]
+memo = "The population number for the ENEAT algorithm if constant."
+dtype = "int"
+default = 1
+
+[scenarios.population_size_profile]
+memo = "A generation variant profile containing the population sizes."
+dtype = "profile"
+item.dtype = "int"
+default = []
+
+[scenarios.mutate_path]
+memo = "The decimal percent chance of an 'add_component' mutation"
+dtype = "float"
+default = 0.1
+
+[scenarios.mutate_path_profile]
+memo = "A generation variant profile containing the decimal percent change of an 'add_component' mutation"
+dtype = "profile"
+item.dtype = "float"
+default = []
+
+
+[energy_carriers]
+[energy_carriers.unit]
+memo = "The unit associated with the energy carrier"
+dtype = "str"
+default = "kwh"
+
+
+[locations]
+[locations.lat]
+memo = "The latitude of the location"
+dtype = "float"
+default = 0
+
+[locations.long]
+memo = "The longitude of the location"
+dtype = "float"
+default = 0
+
+[locations.height]
+memo = "The longitude of the location"
+dtype = "float"
+default = 0
+
+
+[components]
+[components.locations]
+memo = "A list containing all possible locations of the component"
+dtype = "list"
+item.ref = ["locations"]
+default = ["all"]
+
+[components.nodes]
+memo = """
+A dict of explicitly defined nodes (comprising on an 'energy_carrier' and 'node_type')
+for each component. The flow through the component's 'node_representative' 
+will be used for all cost and co2 calculations"""
+dtype = "dict"
+keys.rep.memo = "The node which represents the component (used for costs/co2 calculations)"
+keys.rep.dtype = "dict"
+keys.rep.keys.optional = ['location', 'capacity_min']
+keys.rep.keys.energy_carrier.dtype = "str"
+keys.rep.keys.energy_carrier.ref = ['energy_carriers']
+keys.rep.keys.node_type.dtype = "enum"
+keys.rep.keys.node_type.enum = ["supply", "demand", "input", "output", "store", "area", "solar"]
+keys.rep.keys.location.dtype = "str"
+keys.rep.keys.location.ref = ['locations']
+keys.rep.keys.capacity_min.dtype = "float"
+keys.value.dtype = "dict"
+keys.value.keys.optional = ['location', 'capacity_min', 'capacity_max']
+keys.value.keys.energy_carrier.dtype = "str"
+keys.value.keys.energy_carrier.ref = ['energy_carriers']
+keys.value.keys.node_type.dtype = "enum"
+keys.value.keys.node_type.enum = ["supply", "demand", "input", "output", "store", "area", "solar"]
+keys.value.keys.location.dtype = "str"
+keys.value.keys.location.ref = ['locations']
+keys.value.keys.capacity_min.dtype = "float"
+keys.value.keys.capacity_max.dtype = "float"
+
+[components.weights]
+memo = """
+A dict of explicitly defined weights between two nodes, with the first key being the origin node,
+ and the second the destination node."""
+dtype = "dict"
+keys.self_ref = ['nodes']
+keys.value.dtype = "dict"
+keys.value.keys.self_ref = ['nodes']
+keys.value.keys.value.dtype = "dict"
+keys.value.keys.value.keys.enum = ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100']
+keys.value.keys.value.keys.value.dtype = "float"
+default = {}
+
+[components.ratios]
+memo = """
+A dict containing the ratio of the first key as a fraction of the second.
+E.g. {'node0':{'node1':0.5} is equivalent to 'node0' = 'node1' * 0.5 or:
+'node0' must always be 50% of 'node1'"""
+dtype = "dict"
+keys.self_ref = ['nodes']
+keys.value.dtype = "dict"
+keys.value.keys.self_ref = ['nodes']
+keys.value.keys.value.dtype = "float"
+default = {}
+
+[components.minimum_load]
+memo = """
+A time variant profile containing the minimum load state of component"""
+dtype = "enum"
+default = 0
+enum = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+
+[components.number_max]
+memo = "The maximum number of a component allowed in the network for each location. Default is always 1"
+dtype = "dict"
+default.all = 1
+keys.self_ref = ["locations"]
+keys.value.dtype = "float"
+
+[components.number_min]
+memo = "The minimum number of a component allowed in the network for each location. Default is always 0"
+dtype = "dict"
+default.all = 0
+keys.self_ref = ["locations"]
+keys.value.dtype = "float"
+
+[components.capacities]
+memo = "A list containing all possible component design capacities"
+dtype = "dict"
+default.all = []
+keys.self_ref = ["locations"]
+keys.value.dtype = "list"
+keys.value.item.dtype = "float"
+
+[components.capacity_max]
+memo = "The maximum design capacity able to be chosen by location."
+dtype = "dict"
+default.all = 1000000
+keys.self_ref = ["locations"]
+keys.value.dtype = "float"
+
+[components.capacity_min]
+memo = "The minimum design capacity able to be chosen by location."
+dtype = "dict"
+default.all = 0
+keys.self_ref = ["locations"]
+keys.value.dtype = "float"
+
+[components.capacity_stepsize]
+memo = "The stepsize between max and min by location."
+dtype = "dict"
+default.all = 100
+keys.self_ref = ["locations"]
+keys.value.dtype = "float"
+
+[components.capacity_max_temp]
+memo = """
+A time variant profile containing the maximum capacity of component"""
+dtype = "dict"
+keys.self_ref = ["locations"]
+keys.value.dtype = "profile"
+keys.value.item.dtype = "float"
+default = {}
+
+[components.capacity_min_temp]
+memo = """
+A time variant profile containing the minimum capacity of component"""
+dtype = "dict"
+keys.self_ref = ["locations"]
+keys.value.dtype = "profile"
+keys.value.item.dtype = "float"
+default = {}
+
+[components.costs_invest_fixed]
+memo = "The fixed investment costs of the component."
+dtype = "dict"
+default = {}
+keys.self_ref = ["locations"]
+keys.value.dtype = "float"
+
+[components.costs_invest_per_cap]
+memo = "The investment costs per unit capacity of the component."
+dtype = "dict"
+default = {}
+keys.self_ref = ["locations"]
+keys.value.dtype = "float"
+
+[components.costs_invest_per_use]
+memo = "The investment costs per unit of energy used."
+dtype = "dict"
+default = {}
+keys.self_ref = ["locations"]
+keys.value.dtype = "float"
+
+[components.costs_invest_per_use_temp]
+memo = "A time variant profile containing the investment costs per energy used"
+dtype = "dict"
+default = {}
+keys.self_ref = ["locations"]
+keys.value.dtype = "profile"
+keys.value.item.dtype = "float"
+
+[components.costs_OM_fixed]
+memo = "The fixed operation and maintenance costs."
+dtype = "dict"
+default = {}
+keys.self_ref = ["locations"]
+keys.value.dtype = "float"
+
+[components.costs_OM_per_cap]
+memo = "The operation and maintenance costs per unit of capacity."
+dtype = "dict"
+default = {}
+keys.self_ref = ["locations"]
+keys.value.dtype = "float"
+
+[components.costs_OM_per_use]
+memo = "The operation and maintenance costs per unit of energy used."
+dtype = "dict"
+default = {}
+keys.self_ref = ["locations"]
+keys.value.dtype = "float"
+
+[components.costs_OM_per_use_temp]
+memo = "A time variant profile containing the costs for operation and maintenance per energy used"
+dtype = "dict"
+default = {}
+keys.self_ref = ["locations"]
+keys.value.dtype = "profile"
+keys.value.item.dtype = "float"
+
+[components.co2_fixed]
+memo = "The fixed co2 emission of a given component in kg co2 equivalent per location."
+dtype = "dict"
+default = {}
+keys.self_ref = ["locations"]
+keys.value.dtype = "float"
+
+[components.co2_per_cap]
+memo = "The co2 per capacity of a given component in kg co2 equivalent per location."
+dtype = "dict"
+default = {}
+keys.self_ref = ["locations"]
+keys.value.dtype = "float"
+
+[components.co2_per_use]
+memo = "The variable co2 emissions associated with a given component if constant (kg*co2 per kwh)"
+dtype = "dict"
+default = {}
+keys.self_ref = ["locations"]
+keys.value.dtype = "float"
+
+[components.co2_per_use_temp]
+memo ="A list containing the co2 per use at each timestep."
+dtype = "dict"
+default = {}
+keys.self_ref = ["locations"]
+keys.value.dtype = "profile"
+keys.value.item.dtype = "float"
+
+
+# [connections]
+# [connections.origin]
+# memo = "The origin location of the connection"
+# dtype = "str"
+# ref = ["locations"]
+
+# [connections.destin]
+# memo = "The origin location of the connection"
+# dtype = "str"
+# ref = ["locations"]
+
+# [connections.weight]
+# memo = "A dict containing the weights of a connection given the energy carrier"
+# dtype = "dict"
+# keys.ref = ["energy_carriers"]
+# keys.value.dtype = "float"
+# default.all = 0.0
+
+# # [connections.loss_per_distance]
+# # memo = "A dict containing the percentage loss per distance of a connection given the energy carrier"
+# # dtype = "dict"
+# # keys.ref = ["energy_carriers"]
+# # keys.value.dtype = "float"
+# # default.all = 0.0
+
+# # [connections.distance]
+# # memo = "The distance between the origin location and destination location"
+# # dtype = "float"
+# # default = 1.0
+
+# # [connections.unidir]
+# # memo = """
+# # A boolean denoting whether the connection is uni-directional (True) or
+# # bi-directional (False)"""
+# # dtype = "bool"
+# # default = false
+
+# [capacity]
+# [capacity.capacity_max]
+# memo = "The maximum design capacity able to be chosen by location."
+# dtype = "dict"
+# keys.ref = ["components", "connections", "energy_carriers"]
+# keys.value.dtype = "dict"
+# keys.value.keys.ref = ["locations", "energy_carriers"]
+# keys.value.keys.value.dtype = "float"
+
+# [capacity.capacity_min]
+# memo = "The minimum design capacity able to be chosen by location."
+# dtype = "dict"
+# keys.ref = ["components", "connections", "energy_carriers"]
+# keys.value.dtype = "dict"
+# keys.value.keys.ref = ["locations", "energy_carriers"]
+# keys.value.keys.value.dtype = "float"
+
+# [capacity.capacity_max_temporal]
+# memo = """
+# A time variant profile containing the maximum capacity of component or connection"""
+# dtype = "dict"
+# keys.ref = ["components", "connections"]
+# keys.value.dtype = "dict"
+# keys.value.keys.ref = ["locations", "energy_carriers"]
+# keys.value.keys.value.dtype = "profile"
+# keys.value.keys.value.item.dtype = "float"
+
+# [capacity.capacity_min_temporal]
+# memo = """
+# A time variant profile containing the minimum capacity of component or connection"""
+# dtype = "dict"
+# keys.ref = ["components", "connections"]
+# keys.value.dtype = "dict"
+# keys.value.keys.ref = ["locations", "energy_carriers"]
+# keys.value.keys.value.dtype = "profile"
+# keys.value.keys.value.item.dtype = "float"
+
+
+# [cost]
+# [cost.costs_invest_fixed]
+# memo = "The fixed investment costs of the component."
+# dtype = "dict"
+# keys.ref = ["components", "connections"]
+# keys.value.dtype = "dict"
+# keys.value.keys.ref = ["locations", "energy_carriers"]
+# keys.value.keys.value.dtype = "float"
+
+# [cost.costs_invest_per_cap]
+# memo = "The investments costs per unit capacity of the component."
+# dtype = "dict"
+# keys.ref = ["components", "connections"]
+# keys.value.dtype = "dict"
+# keys.value.keys.ref = ["locations", "energy_carriers"]
+# keys.value.keys.value.dtype = "float"
+
+# [cost.costs_OM_fixed]
+# memo = "The fixed operation and maintenance costs."
+# dtype = "dict"
+# keys.ref = ["components", "connections"]
+# keys.value.dtype = "dict"
+# keys.value.keys.ref = ["locations", "energy_carriers"]
+# keys.value.keys.value.dtype = "float"
+
+# [cost.costs_OM_per_cap]
+# memo = "The operation and maintenance costs per unit of capacity."
+# dtype = "dict"
+# keys.ref = ["components", "connections"]
+# keys.value.dtype = "dict"
+# keys.value.keys.ref = ["locations", "energy_carriers"]
+# keys.value.keys.value.dtype = "float"
+
+# [cost.costs_OM_per_use]
+# memo = "The operation and maintenance costs per unit of energy used."
+# dtype = "dict"
+# keys.ref = ["components", "connections"]
+# keys.value.dtype = "dict"
+# keys.value.keys.ref = ["locations", "energy_carriers"]
+# keys.value.keys.value.dtype = "float"
+
+# [cost.costs_OM_per_use_temporal]
+# memo = "A time variant profile containing the costs for operation and maintenance per energy used"
+# dtype = "dict"
+# keys.ref = ["components", "connections"]
+# keys.value.dtype = "dict"
+# keys.value.keys.ref = ["locations", "energy_carriers"]
+# keys.value.keys.value.dtype = "profile"
+# keys.value.keys.value.item.dtype = "float"
+
+
+# [co2]
+# [co2.co2_invest_fixed]
+# memo = "The fixed co2 emission of a given component in kg co2 equivalent per location."
+# dtype = "dict"
+# keys.ref = ["components", "connections"]
+# keys.value.dtype = "dict"
+# keys.value.keys.ref = ["locations", "energy_carriers"]
+# keys.value.keys.value.dtype = "float"
+
+# [co2.co2_invest_per_cap]
+# memo = "The co2 per capacity of a given component in kg co2 equivalent per location."
+# dtype = "dict"
+# keys.ref = ["components", "connections"]
+# keys.value.dtype = "dict"
+# keys.value.keys.ref = ["locations", "energy_carriers"]
+# keys.value.keys.value.dtype = "float"
+
+
+# [co2.co2_OM_per_use]
+# memo = "The variable co2 emissions associated with a given component if constant (kg*co2 per kwh)"
+# dtype = "dict"
+# keys.ref = ["components", "connections"]
+# keys.value.dtype = "dict"
+# keys.value.keys.ref = ["locations", "energy_carriers"]
+# keys.value.keys.value.dtype = "float"
+
+# [co2.co2_OM_per_use_temporal]
+# memo = "A list containing the 'co2_variable' at each timestep."
+# dtype = "dict"
+# keys.ref = ["components", "connections"]
+# keys.value.dtype = "dict"
+# keys.value.keys.ref = ["locations", "energy_carriers"]
+# keys.value.keys.value.dtype = "profile"
+# keys.value.keys.value.item.dtype = "float"
+
+# [number]
+# [number.number_min]
+# memo = "The minimum number of a component allowed in the network for each location. Default is always 0"
+# dtype = "dict"
+# keys.ref = ["components", "connections"]
+# keys.value.dtype = "dict"
+# keys.value.keys.ref = ["locations", "energy_carriers"]
+# keys.value.keys.value.dtype = "int"
+
+# [number.number_max]
+# memo = "The maximum number of a component allowed in the network for each location. Default is always 1"
+# dtype = "dict"
+# keys.ref = ["components", "connections"]
+# keys.value.dtype = "dict"
+# keys.value.keys.ref = ["locations", "energy_carriers"]
+# keys.value.keys.value.dtype = "int"

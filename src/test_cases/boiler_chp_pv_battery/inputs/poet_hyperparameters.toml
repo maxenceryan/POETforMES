@@ -1,0 +1,18 @@
+max_children=100
+
+mutation_interval=3
+transfer_interval=2
+
+min_reward_keep_env=[600000, 400000]
+max_reward_keep_env=[10000, 10000]
+min_reward_reproduce_agent=[600000, 400000]
+
+iterations=20
+
+learning_rate=1
+noise_stdev=1
+optimizer_population_size=5
+optimizer_elite_size=3
+
+capacity = 4
+random_seed = 20

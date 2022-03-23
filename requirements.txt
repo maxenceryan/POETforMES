@@ -1,0 +1,12 @@
+### Modified POET
+pyomo
+gurobipy
+numpy
+pandas
+
+### Visualiser
+plotly
+dash
+skopt
+sklearn
+dill

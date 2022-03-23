@@ -1,0 +1,4 @@
+[scenario1]
+population_size = 20
+period_end = 24
+objectives = ['cost', 'co2']

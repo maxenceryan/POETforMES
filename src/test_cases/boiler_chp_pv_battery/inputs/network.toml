@@ -1,0 +1,27 @@
+# COMPONENTS
+# per location, in form component = number to add
+[components.bld1]
+elec_supply = 1
+gas_supply = 1
+solar_supply = 1
+
+chp_gas = 1
+boiler_gas = 1
+pv = 1
+battery = 1
+
+elec_demand = 1
+heat_demand = 1
+
+
+# CONNECTIONS
+# per location, in form origin = destinations
+[connections.bld1]
+elec_supply = ['elec_demand', 'battery']
+solar_supply = ['pv']
+gas_supply = ['chp_gas', 'boiler_gas']
+
+chp_gas = ['elec_demand','heat_demand', 'battery']
+boiler_gas = ['heat_demand']
+pv = ['elec_demand', 'battery']
+battery = ['elec_demand']
