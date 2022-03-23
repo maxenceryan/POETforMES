@@ -4,6 +4,10 @@ Master's Thesis for the M.Sc. of Integrated Building Systems at ETH Zürich, 29.
 
 **Navigating Uncertainty with Co-Evolution of Agents and Environments for the Design of Robust Multi-Energy Systems**
 
+## Demo
+
+![Interactive Visualiser](resources/Interactive%20Visualiser%20Demo.gif)
+
 ## Abstract
 
 Distributed Multi-Energy Systems (DMES) are often designed deterministically, although research suggests that uncertainty can cause significant deviations in performance of DMES and should therefore be considered in design selection. State of the art approaches propose a framework of assessing and quantifying sensitivity of uncertain parameters in DMES design and offer approaches to optimize these designs under uncertainty. However, they are often first optimized for a single scenario first, which can theoretically miss robust designs that are not necessarily optimal in any single scenario. The goal of this thesis is to see if an approach based on the Paired-Open Ended Trailblazer (POET) algorithm can find these designs and help planners more confidently select robust DMES design.
@@ -14,6 +18,8 @@ The results confirm that the state of the approach does miss robust designs that
 
 Finally, an interactive visualization tool is developed that allows for environment and agent comparison. The tool consists of a heatmap grid to compare agents in other environment, with sampled points and an approximation via surrogate model of the entire performance space. A comparative pareto front graph allows to compare a single agent’s performance relative to the objectives in different environments. The tool was found to provide a good overview and quick response time for planners, which can encourage planners to explore uncertainty in their designs at an early stage.
 
+[Link to full paper](https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/486018/MA_report_Ryan.pdf?sequence=1)
+
 ## Key Figures
 
 ### Simulation Example
@@ -23,10 +29,6 @@ Finally, an interactive visualization tool is developed that allows for environm
 ### Visualiser
 
 ![Visualiser](resources/demo_visconcept.png)
-
-## Demo
-
-![Interactive Visualiser](resources/Interactive%20Visualiser%20Demo.gif)
 
 ## Links
 
